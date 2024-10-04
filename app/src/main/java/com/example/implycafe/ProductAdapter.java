@@ -24,9 +24,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         void onItemClick(int position);
         void onItemLongClick(int position);
     }
-    public ProductAdapter(Context context, List<Product> productList) {
+    public ProductAdapter(Context context, List<Product> productList, onItemClickListener listener) {
         this.productList = productList;
         this.context = context;
+        this.onItemClickListener = listener;
     }
 
     @NonNull
@@ -49,10 +50,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             }
         });
 
-        holder.itemView.setOnClickListener(v -> {
+        holder.itemView.setOnLongClickListener(v -> {
             if(onItemClickListener != null){
                 onItemClickListener.onItemLongClick(position);
+                return true;
             }
+            return false;
         });
 
     }

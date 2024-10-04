@@ -1,6 +1,8 @@
 package com.example.implycafe;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
     String name;
     String description;
     String price;
@@ -34,4 +36,5 @@ public class Product {
     public void setPrice(String price) {
         this.price = price;
     }
+
 }
