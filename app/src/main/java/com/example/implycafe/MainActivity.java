@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -47,18 +48,40 @@ public class MainActivity extends AppCompatActivity implements ProductAdapter.on
                 @Override
                 public Product parseResult(int resultCode, @Nullable Intent intent) {
                     if (resultCode == RESULT_OK && intent != null) {
+                        if (intent.hasExtra("editedProduct")){
+                            return (Product) intent.getSerializableExtra("editedProduct");
+                        } else {
                         return (Product) intent.getSerializableExtra("newProduct");
+                        }
                     }
                     return null;
                 }
 
             }, new ActivityResultCallback<Product>() {
                 @Override
-                public void onActivityResult(Product newProduct) {
-                    if(newProduct!= null){
-                        productList.add(newProduct);
-                        productAdapter.notifyDataSetChanged();
-                        Toast.makeText(MainActivity.this,"Produto adicionado!!!", Toast.LENGTH_SHORT).show();
+                public void onActivityResult(Product product) {
+
+                    if (product != null){
+
+                        boolean exists = false;
+                        int position = -1;
+
+                        for (int i = 0; i < productList.size(); i++){
+                            if (productList.get(i).getId().equals(product.getId())){
+                                exists = true;
+                                position = i;
+                                break;
+                            }
+                        }
+                        if (exists){
+                            productList.set(position, product);
+                            productAdapter.notifyItemChanged(position);
+                            Toast.makeText(MainActivity.this, "Produto atualizado!", Toast.LENGTH_SHORT);
+                        } else {
+                            productList.add(product);
+                            productAdapter.notifyItemInserted(productList.size() - 1);
+                            Toast.makeText(MainActivity.this,"Produto adicionado!!!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             });
@@ -80,8 +103,15 @@ public class MainActivity extends AppCompatActivity implements ProductAdapter.on
 
         productList = new ArrayList<>();
         productList.add(new Product("Coca cola", "ela tá gelada", "10"));
-        productList.add(new Product("Pepsi", "Pepsi geladinha", "15"));
-        productList.add(new Product("Fanta", "ela tá gelada", "25"));
+        productList.add(new Product("Pepsi", "ela tá gelada", "7"));
+        productList.add(new Product("Sprite", "ela tá gelada", "4.50"));
+        productList.add(new Product("Dolly", "ela tá gelada", "12.99"));
+        productList.add(new Product("Sprite", "ela tá gelada", "4.50"));
+        productList.add(new Product("Dolly", "ela tá gelada", "12.99"));
+
+        productList.add(new Product("Sprite", "ela tá gelada", "4.50"));
+        productList.add(new Product("Dolly", "ela tá gelada", "12.99"));
+
 
         productAdapter = new ProductAdapter(this, productList, this);
         recyclerView.setAdapter(productAdapter);
@@ -101,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements ProductAdapter.on
         builder.setPositiveButton("SIM", (dialog, which) -> {
             productList.remove(position);
             productAdapter.notifyItemRemoved(position);
+            productAdapter.notifyItemRangeChanged(position, productList.size());
             Toast.makeText(this,"Produto removido !", Toast.LENGTH_SHORT).show();
         });
 
@@ -123,6 +154,12 @@ public class MainActivity extends AppCompatActivity implements ProductAdapter.on
 
     public void onItemClick(int position) {
         Product product = productList.get(position);
-        Toast.makeText(this, "Clicked: " + product.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MainActivity.this, ProductActivity.class);
+
+        intent.putExtra("productToEdit", product);
+        intent.putExtra("position", position);
+
+        addProductLauncher.launch(intent);
+
     }
 }

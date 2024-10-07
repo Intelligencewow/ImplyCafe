@@ -1,16 +1,29 @@
 package com.example.implycafe;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class Product implements Serializable {
+    private final String id;
     String name;
     String description;
     String price;
+    String imageUrl;
 
     public Product(String name, String description, String price){
+        this.id = UUID.randomUUID().toString();
         this.name = name;
-        this. description = description;
+        this.description = description;
         this.price = price;
+        this.imageUrl = "";
+    }
+
+    public Product(String name, String description, String price, String imageUrl){
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.imageUrl = imageUrl;
     }
 
     public String getName() {
@@ -36,5 +49,13 @@ public class Product implements Serializable {
     public void setPrice(String price) {
         this.price = price;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getImageUrl() { return imageUrl; }
+
+    public void setImageUrl(String url) { this.imageUrl = url; }
 
 }
