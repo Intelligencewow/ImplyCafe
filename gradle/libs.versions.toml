@@ -1,6 +1,8 @@
 [versions]
 agp = "8.7.0"
 compiler = "4.12.0"
+compilerVersion = "4.16.0"
+glide = "4.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -11,6 +13,8 @@ constraintlayout = "2.1.4"
 
 [libraries]
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
+compiler-v4160 = { module = "com.github.bumptech.glide:compiler", version.ref = "compilerVersion" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

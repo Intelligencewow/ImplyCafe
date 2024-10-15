@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -19,8 +20,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements ProductAdapter.on
     private ProductAdapter productAdapter;
     private List<Product> productList;
     private AlertDialog.Builder builder;
+    ProductViewModel productViewModel;
 
 
 
@@ -66,18 +70,12 @@ public class MainActivity extends AppCompatActivity implements ProductAdapter.on
                         boolean exists = false;
                         int position = -1;
 
-                        for (int i = 0; i < productList.size(); i++){
-                            if (productList.get(i).getId().equals(product.getId())){
-                                exists = true;
-                                position = i;
-                                break;
-                            }
-                        }
                         if (exists){
                             productList.set(position, product);
                             productAdapter.notifyItemChanged(position);
-                            Toast.makeText(MainActivity.this, "Produto atualizado!", Toast.LENGTH_SHORT);
+                            Toast.makeText(MainActivity.this, "Produto atualizado!", Toast.LENGTH_SHORT).show();
                         } else {
+                            productViewModel.insert(product);
                             productList.add(product);
                             productAdapter.notifyItemInserted(productList.size() - 1);
                             Toast.makeText(MainActivity.this,"Produto adicionado!!!", Toast.LENGTH_SHORT).show();
@@ -101,20 +99,21 @@ public class MainActivity extends AppCompatActivity implements ProductAdapter.on
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        productList = new ArrayList<>();
-        productList.add(new Product("Coca cola", "ela tá gelada", "10"));
-        productList.add(new Product("Pepsi", "ela tá gelada", "7"));
-        productList.add(new Product("Sprite", "ela tá gelada", "4.50"));
-        productList.add(new Product("Dolly", "ela tá gelada", "12.99"));
-        productList.add(new Product("Sprite", "ela tá gelada", "4.50"));
-        productList.add(new Product("Dolly", "ela tá gelada", "12.99"));
 
-        productList.add(new Product("Sprite", "ela tá gelada", "4.50"));
-        productList.add(new Product("Dolly", "ela tá gelada", "12.99"));
+        productList = new ArrayList<>();
 
 
         productAdapter = new ProductAdapter(this, productList, this);
         recyclerView.setAdapter(productAdapter);
+
+
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        //productViewModel.insert(new Product("Pepsi", "ela tá gelada", "7", "https://images.tcdn.com.br/img/img_prod/858764/refrigerante_coca_cola_lata_350ml_c_12_359_1_20201021152315.jpg"));
+
+        productViewModel.getProductList().observe(this, products -> {
+            productAdapter.setProductList(products);
+            Log.d("MainActivity", "Total de produtos: " + products.size());
+        });
 
         FloatingActionButton createProduct = findViewById(R.id.createProduct);
         createProduct.setOnClickListener(v -> {

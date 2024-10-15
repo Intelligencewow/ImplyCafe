@@ -1,25 +1,27 @@
 package com.example.implycafe;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 import java.util.UUID;
 
-public class Product implements Serializable {
-    private final String id;
-    String name;
-    String description;
-    String price;
-    String imageUrl;
 
-    public Product(String name, String description, String price){
-        this.id = UUID.randomUUID().toString();
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.imageUrl = "";
-    }
+@Entity(tableName = "product")
+public class Product implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+    @ColumnInfo(name = "nome")
+    public String name;
+    @ColumnInfo(name = "descricao")
+    public String description;
+    @ColumnInfo(name = "preco")
+    public String price;
+    @ColumnInfo(name = "imageUrl")
+    public String imageUrl;
 
     public Product(String name, String description, String price, String imageUrl){
-        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.price = price;
@@ -50,7 +52,7 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
