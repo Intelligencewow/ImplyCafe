@@ -1,5 +1,6 @@
 package com.example.implycafe;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -10,8 +11,9 @@ import java.util.UUID;
 
 @Entity(tableName = "product")
 public class Product implements Serializable {
-    @PrimaryKey(autoGenerate = true)
-    public int id;
+    @PrimaryKey(autoGenerate = false)
+    @NonNull
+    public String id;
     @ColumnInfo(name = "nome")
     public String name;
     @ColumnInfo(name = "descricao")
@@ -22,6 +24,7 @@ public class Product implements Serializable {
     public String imageUrl;
 
     public Product(String name, String description, String price, String imageUrl){
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.price = price;
@@ -52,7 +55,7 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

@@ -57,13 +57,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             holder.productImage.setVisibility(View.GONE);
         }
 
+        holder.productPrice.setText(product.getPrice());
+
         if(product.getPrice() != null && !product.getPrice().isEmpty()){
             double price = Double.parseDouble(product.getPrice());
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
             String formattedPrice = currencyFormat.format(price);
             holder.productPrice.setText(formattedPrice);
         }
-
         holder.productName.setText(product.getName());
         holder.productDescription.setText(product.getDescription());
 
